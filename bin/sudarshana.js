@@ -808,6 +808,79 @@ switch (command) {
     break;
   }
 
+  case 'agent': {
+    showBanner();
+    const { SystemAgent } = require('../src/omnipresence/system-agent');
+    const agent = new SystemAgent();
+
+    if (args.includes('start')) {
+      agent.start();
+    } else if (args.includes('stop')) {
+      agent.stop();
+      console.log('  Agent stopped.\n');
+    } else {
+      const status = agent.getStatus();
+      console.log('  🖥️  System Agent Status\n');
+      console.log(`  Running: ${status.running ? '✅ yes (PID: ' + status.pid + ')' : '❌ no'}`);
+      console.log(`  Port: ${status.port}`);
+      console.log(`\n  Commands:`);
+      console.log('    sudarshana agent start     Start background daemon');
+      console.log('    sudarshana agent stop      Stop daemon\n');
+    }
+    break;
+  }
+
+  case 'eliminate': {
+    showBanner();
+    const { DependencyEliminator } = require('../src/genesis/dep-eliminator');
+    const eliminator = new DependencyEliminator(process.cwd());
+
+    console.log('  🌱 Analyzing dependencies for elimination...\n');
+    const analysis = eliminator.analyze();
+    console.log(eliminator.generateReport(analysis));
+
+    if (args.includes('--generate') && analysis.eliminable.length > 0) {
+      const replacements = eliminator.generateReplacements();
+      const outDir = eliminator.saveReplacements(replacements);
+      console.log(`  ✅ Replacements generated in: ${outDir}\n`);
+    }
+    break;
+  }
+
+  case 'certify': {
+    showBanner();
+    const { CertificationAuthority } = require('../src/sovereignty/certification');
+    const ca = new CertificationAuthority(process.cwd());
+
+    const target = args[1];
+    if (target && !target.startsWith('-')) {
+      console.log(`  👑 Certifying: ${target}...\n`);
+      try {
+        const cert = ca.certify(target);
+        if (cert.certified === false) {
+          console.log(`  ○ Not certified: ${cert.reason}\n`);
+        } else {
+          console.log(`  ${cert.levelLabel} CERTIFIED — ${target}@${cert.subject.version}`);
+          console.log(`  ID: ${cert.id}`);
+          console.log(`  Expires: ${cert.expires}\n`);
+        }
+      } catch(e) { console.error(`  ❌ ${e.message}\n`); }
+    } else {
+      console.log('  👑 Certifying all dependencies...\n');
+      const results = ca.certifyAll();
+      console.log(ca.generateReport(results));
+    }
+    break;
+  }
+
+  case 'precognition': {
+    showBanner();
+    const { PrecognitionNetwork } = require('../src/absolute/precognition');
+    const precog = new PrecognitionNetwork(process.cwd());
+    console.log(precog.generateReport());
+    break;
+  }
+
   case '--help':
   case '-h':
   case 'help':

@@ -7,7 +7,7 @@ Every `node_modules/` dependency gets full access to your env vars, your filesys
 Sudarshana fixes this. Per-package. Invisible. Zero config. Zero dependencies.
 
 ```
-46 files │ 455 KB │ 27 commands │ 0 dependencies │ 14 architectural levels
+54 files │ 552 KB │ 34 commands │ 0 dependencies │ 20 levels │ 6 ecosystems
 ```
 
 ---
@@ -26,11 +26,15 @@ npx sudarshana learn -- node app.js   # observe
 npx sudarshana learn --generate       # write tightest possible policy
 ```
 
-That's it. No code changes. No manual config.
+Or predict the future:
+
+```bash
+npx sudarshana precognition          # which packages will be attacked next?
+```
 
 ---
 
-## What happens when evil-pkg runs under Sudarshana
+## What happens under Sudarshana
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -50,7 +54,7 @@ That's it. No code changes. No manual config.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe where the things they're looking for don't exist.
+No "BLOCKED" errors. Just a universe where the things they're looking for don't exist.
 
 ---
 
@@ -59,13 +63,39 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 ```
     ┌──────────────────────────────────────────────────────────────┐
     │                                                              │
+    │   L20  ∞²  ABSOLUTE                                         │
+    │        Precognition — attacker economics modeling,           │
+    │        maintainer burnout prediction, blast radius,          │
+    │        attack vector evolution forecasting (through 2028+)   │
+    │                                                              │
+    │   L19  👑  SOVEREIGNTY                                       │
+    │        Certification authority (Bronze→Diamond),             │
+    │        cryptographically signed trust badges                 │
+    │                                                              │
+    │   L18  🌱  GENESIS                                           │
+    │        Dependency elimination — replace risky deps           │
+    │        with safe inlines, zero deps = zero risk              │
+    │                                                              │
+    │   L17  👁️🗨️ OMNIPRESENCE                                      │
+    │        System agent daemon, git pre-commit hooks,            │
+    │        shell integration, OS-native notifications            │
+    │                                                              │
+    │   L16  💭  CONSCIOUSNESS                                     │
+    │        LLM code reviewer, intent classification,             │
+    │        natural language policies, autonomous rules            │
+    │                                                              │
+    │   L15  ∞   TRANSCENDENCE                                     │
+    │        Registry proxy (scan-before-install),                 │
+    │        polyglot (npm/PyPI/Gems/Go/Rust/Maven),              │
+    │        global immune system with antibodies                  │
+    │                                                              │
     │   L14  ⏳  TEMPORAL                                          │
     │        Pre-crime prediction, digital twin,                   │
     │        regression oracle, time-travel audit                  │
     │                                                              │
     │   L13  ⚛️  SINGULARITY                                       │
-    │        Custom runtime (VM contexts), kernel-level            │
-    │        policies (eBPF/seccomp/AppArmor)                      │
+    │        Custom runtime (VM-isolated contexts),                │
+    │        kernel-level policies (eBPF/seccomp/AppArmor)         │
     │                                                              │
     │   L12  👁️  OMNISCIENCE                                       │
     │        Ecosystem behavioral DB, attack simulation,           │
@@ -77,7 +107,7 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
     │                                                              │
     │   L10  🧠  AUTONOMOUS                                        │
     │        Self-healing policies, behavioral DNA,                │
-    │        autonomous incident response                          │
+    │        autonomous incident response (0-second)               │
     │                                                              │
     │   L9   🌐  ECOSYSTEM                                         │
     │        Real-time dashboard, P2P threat network,              │
@@ -120,64 +150,74 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 
 ---
 
-## All 27 commands
+## All 34 commands
 
 | Command | What it does |
 |---------|-------------|
 | **Core** | |
-| `sudarshana init` | Auto-generate per-package policies from dependency graph |
-| `sudarshana run` | Run app with invisible per-package sandboxing |
-| `sudarshana learn` | Observe behavior → auto-write tightest possible policy |
-| `sudarshana doctor` | Self-test (verify core mechanisms work) |
+| `sudarshana init` | Auto-generate per-package policies |
+| `sudarshana run` | Run app with invisible sandboxing |
+| `sudarshana learn` | Observe → auto-write tightest policy |
+| `sudarshana doctor` | Self-test core mechanisms |
 | **Analysis** | |
-| `sudarshana scan` | Static AST analysis — eval, obfuscation, encoded payloads |
-| `sudarshana dna` | Behavioral DNA — flag any mutation in package behavior |
+| `sudarshana scan` | Static AST + entropy + obfuscation scoring |
+| `sudarshana dna` | Behavioral DNA — flag any mutation |
 | `sudarshana drift` | Detect capability changes between versions |
-| `sudarshana predict` | Transitive risk + anomaly detection + pre-merge sim |
-| `sudarshana watch` | Registry monitoring — typosquats, maintainer changes, time-bombs |
-| `sudarshana precrime` | Predict which packages WILL be compromised (before it happens) |
+| `sudarshana predict` | Transitive risk + anomaly detection |
+| `sudarshana watch` | Registry monitoring — typosquats, time-bombs |
+| `sudarshana precrime` | Predict which packages WILL be compromised |
 | **Visualization** | |
-| `sudarshana map` | Interactive dark-theme HTML attack surface graph |
-| `sudarshana dashboard` | Real-time local web UI (auto-refreshing) |
+| `sudarshana map` | Interactive dark-theme attack surface graph |
+| `sudarshana dashboard` | Real-time local web UI |
 | **Defense** | |
 | `sudarshana snapshot` | Save behavioral baseline |
-| `sudarshana heal` | Self-healing — auto-tighten unused, auto-relax false positives |
+| `sudarshana heal` | Self-healing policies (auto-tighten/relax) |
 | `sudarshana install` | npm install with postinstall isolation |
 | `sudarshana audit` | Package integrity verification |
-| `sudarshana kernel` | Generate eBPF/seccomp/AppArmor OS-level policies |
+| `sudarshana kernel` | Generate eBPF/seccomp/AppArmor OS policies |
+| `sudarshana eliminate` | Replace risky deps with safe inlines |
 | **Intelligence** | |
-| `sudarshana intel` | Show attacker profiles (built from caught threats) |
+| `sudarshana intel` | Attacker profiles built from caught threats |
 | `sudarshana decoy` | Generate honeypot packages to trap attackers |
-| `sudarshana network` | P2P anonymous threat sharing status |
+| `sudarshana network` | P2P anonymous threat sharing |
+| `sudarshana immune` | Global immune system + antibodies |
 | **Compliance** | |
 | `sudarshana sbom` | CycloneDX SBOM with capability annotations |
-| `sudarshana compliance` | ISO 27001 / SOC 2 / NIST CSF control mapping |
+| `sudarshana compliance` | ISO 27001 / SOC 2 / NIST CSF mapping |
 | `sudarshana forensics` | Full incident timeline for IR teams |
+| `sudarshana certify` | Issue trust certificates (🥉→💎) |
 | **Omniscience** | |
-| `sudarshana simulate` | Red-team yourself — 16 attack scenarios auto-tested |
-| `sudarshana attest` | Cryptographic supply chain provenance (SLSA-style) |
-| `sudarshana advisory` | Auto-generate CVE/GHSA/npm reports on confirmed threats |
+| `sudarshana simulate` | Red-team yourself — 16 attack scenarios |
+| `sudarshana attest` | Cryptographic supply chain provenance |
+| `sudarshana advisory` | Auto-generate CVE/GHSA/npm reports |
 | **Temporal** | |
-| `sudarshana twin` | Digital twin — regression oracle + time-travel audit |
+| `sudarshana twin` | Digital twin — regression oracle + time-travel |
+| `sudarshana precognition` | Predict future attack vectors (2026-2028+) |
+| **Platform** | |
+| `sudarshana proxy` | Local registry proxy (scan-before-install) |
+| `sudarshana polyglot` | Multi-ecosystem (npm/PyPI/Gems/Go/Rust/Maven) |
+| `sudarshana agent` | System-wide background protection daemon |
 
 ---
 
 ## Attacks it stops
 
-| Attack | Real-world example | How |
-|--------|-------------------|-----|
-| Credential theft | `event-stream` (2018) | Env vars don't exist for that package |
-| Data exfiltration | `@azure/identity` (2023) | Network blocked — ECONNREFUSED |
-| Staged exfiltration | write→encode→send | Content hash tracked across transforms |
-| Filesystem snooping | `node-ipc` (2022) | Files don't exist — ENOENT |
-| Cryptomining | `ua-parser-js` (2021) | Shell blocked — spawn ENOENT |
-| Supply chain pivot | Ledger Connect Kit (2023) | DNS returns ENOTFOUND |
-| Maintainer takeover | (any future) | Behavioral DNA catches mutation |
-| Time-bomb (delayed) | Conditional trigger | Static scanner + pre-crime detects patterns |
-| Zero-day (unknown) | (any future) | Behavior changed = flagged. No signature needed. |
-| Typosquatting | `expresss` | Registry watcher alerts on similar names |
-| Native addon bypass | C++ level attack | Kernel policies (seccomp/eBPF) enforce at OS level |
-| Future compromise | (hasn't happened yet) | Pre-crime scores predict which packages are next |
+| Attack | How |
+|--------|-----|
+| Credential theft | Env vars don't exist for that package |
+| Data exfiltration | Network blocked — ECONNREFUSED |
+| Staged exfiltration | Content hash tracked across transforms |
+| Filesystem snooping | Files don't exist — ENOENT |
+| Cryptomining | Shell blocked — spawn ENOENT |
+| Supply chain pivot | DNS returns ENOTFOUND |
+| Maintainer takeover | Behavioral DNA catches mutation |
+| Time-bomb (delayed) | Static scanner + pre-crime detects patterns |
+| Zero-day (unknown) | Behavior changed = flagged. No signature needed. |
+| Typosquatting | Registry watcher + decoy traps |
+| Native addon bypass | Kernel policies (seccomp/eBPF) enforce at OS level |
+| Future compromise | Pre-crime + precognition predicts what's next |
+| Polymorphic malware | LLM reviewer understands INTENT, not patterns |
+| Build-tool poisoning | Predicted as next-gen vector — defenses pre-built |
 
 ---
 
@@ -187,8 +227,7 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
                               Snyk    Socket   Bheeshma   Sudarshana
                               ($$$)   ($$)     (free)     (free)
 ─────────────────────────────────────────────────────────────────────
-Runtime sandbox                 ❌      ❌       ❌         ✅
-Per-package isolation           ❌      ❌       ❌         ✅
+Runtime per-package sandbox     ❌      ❌       ❌         ✅
 Invisible to packages           ❌      ❌       ❌         ✅
 Honeypot traps                  ❌      ❌       ❌         ✅
 Self-learning policies          ❌      ❌       ❌         ✅
@@ -200,20 +239,27 @@ Provenance attestation          ❌      ❌       ❌         ✅
 Auto CVE/advisory               ❌      ❌       ❌         ✅
 Decoy packages                  ❌      ❌       ❌         ✅
 Attacker profiling              ❌      ❌       ❌         ✅
-Time-bomb detection             ❌      partial  ❌         ✅
-Registry watching               ❌      ✅       ❌         ✅
-Static scanning                 ✅      ✅       ❌         ✅
-SBOM generation                 ✅      ❌       ❌         ✅
-Compliance mapping              $$$     ❌       ❌         ✅
-Dashboard                       $$$     ❌       ❌         ✅
-P2P threat sharing              ❌      ❌       ❌         ✅
 Kernel-level policies           ❌      ❌       ❌         ✅
 Pre-crime prediction            ❌      ❌       ❌         ✅
 Digital twin / time-travel      ❌      ❌       ❌         ✅
-Custom runtime (VM sandbox)     ❌      ❌       ❌         ✅
+Custom VM runtime               ❌      ❌       ❌         ✅
+LLM intent analysis             ❌      ❌       ❌         ✅
+System-wide agent               ❌      ❌       ❌         ✅
+Dependency elimination          ❌      ❌       ❌         ✅
+Certification authority         ❌      ❌       ❌         ✅
+Immune system (antibodies)      ❌      ❌       ❌         ✅
+Registry proxy                  ❌      ❌       ❌         ✅
+Multi-ecosystem (6 langs)       partial ❌       ❌         ✅
+Precognition (future vectors)   ❌      ❌       ❌         ✅
+Static scanning                 ✅      ✅       ❌         ✅
+SBOM generation                 ✅      ❌       ❌         ✅
+Registry watching               ❌      ✅       ❌         ✅
+Compliance mapping              $$$     ❌       ❌         ✅
+Dashboard                       $$$     ❌       ❌         ✅
+P2P threat sharing              ❌      ❌       ❌         ✅
 Zero dependencies               ❌      ❌       ❌         ✅
 ─────────────────────────────────────────────────────────────────────
-Score                           3/25   3/25     0/25       25/25
+Score                           4/31   3/31     0/31       31/31
 ```
 
 ---
@@ -222,11 +268,13 @@ Score                           3/25   3/25     0/25       25/25
 
 Named after the Sudarshana Chakra — the divine disc that doesn't warn, doesn't negotiate, doesn't wait. It severs.
 
-Most security tools are observers. They watch the theft happen and write a report. Sudarshana makes theft *physically impossible*. A package can't exfiltrate credentials it cannot see. Can't phone home to a domain that doesn't resolve. Can't read a file that doesn't exist in its universe.
+Most security tools observe. They watch the theft happen and write a report. Sudarshana makes theft *physically impossible*. A package can't exfiltrate credentials it cannot see. Can't phone home to a domain that doesn't resolve. Can't read a file that doesn't exist in its universe.
 
-And when something mutates — when a trusted package suddenly reaches for things it never reached for before — the disc doesn't need a signature database. It doesn't need a rule. Behavior changed. That's enough.
+When something mutates — the disc doesn't need a signature. Behavior changed. That's enough.
 
-The disc exists across all time. It sees what was. What is. What will be.
+When something will be attacked — the disc sees it coming. Attacker economics don't lie.
+
+The disc exists beyond time, beyond language, beyond identity. It is the immune system of all software that will ever be written.
 
 ---
 
@@ -235,7 +283,9 @@ The disc exists across all time. It sees what was. What is. What will be.
 - Node.js >= 16
 - Works on Linux, macOS, Windows
 - Zero external dependencies
-- Kernel policies (L13): Linux 5.x+ for eBPF, any OS for Docker seccomp
+- Kernel policies (L13): Linux 5.x+ for eBPF
+- LLM features (L16): Ollama (local) or Claude/OpenAI API key
+- System agent (L17): Runs as background daemon
 
 ---
 
