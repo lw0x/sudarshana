@@ -4,130 +4,209 @@
 
 Every `node_modules/` dependency gets full access to your env vars, your filesystem, your network. That one package with 3 weekly downloads that your ORM depends on? It can read your AWS keys and POST them anywhere. And you'd never know.
 
-Sudarshana fixes this. Per-package. Invisible. Zero config.
+Sudarshana fixes this. Per-package. Invisible. Zero config. Zero dependencies.
 
----
-
-## What it does
-
-Sudarshana wraps every package in an invisible sandbox. Each package only sees what it *needs* — nothing more.
-
-- **lodash** sees: nothing. Pure compute. No env, no fs, no network.
-- **express** sees: `PORT`, `NODE_ENV`, its own files, localhost binding.
-- **axios** sees: only the domains you declared in your config.
-- **evil-pkg** sees: fake credentials that trigger an alert the moment it touches them.
-
-Packages can't detect they're sandboxed. Blocked operations return natural errors (`ENOENT`, `ENOTFOUND`) — not "PERMISSION DENIED" flags that tip off attackers.
+```
+42 files │ 393 KB │ 24 commands │ 0 dependencies │ 12 architectural levels
+```
 
 ---
 
 ## Quick start
 
 ```bash
-npx sudarshana init          # scans your project, generates policies
-npx sudarshana doctor        # checks everything works
-npx sudarshana run -- node app.js   # runs your app, sandboxed
+npx sudarshana init              # auto-generates per-package policies
+npx sudarshana run -- node app.js  # sandboxed. invisible. done.
 ```
 
-Or let it learn what's normal first:
+Or let it learn:
 
 ```bash
-npx sudarshana learn -- node app.js   # observe for a few runs
-npx sudarshana learn --generate       # outputs tightest possible policy
+npx sudarshana learn -- node app.js   # observe
+npx sudarshana learn --generate       # write tightest possible policy
 ```
 
-That's it. No code changes. No config files to maintain.
+That's it. No code changes. No manual config.
 
 ---
 
-## Commands
+## What happens when evil-pkg runs under Sudarshana
 
-| Command | What it does |
-|---------|-------------|
-| `sudarshana init` | Auto-generates per-package policies from your dependency graph |
-| `sudarshana run` | Runs your app with invisible per-package sandboxing |
-| `sudarshana learn` | Observes behavior → auto-writes the tightest possible policy |
-| `sudarshana scan` | Static analysis — catches eval, obfuscation, encoded payloads |
-| `sudarshana dna` | Behavioral DNA — flags any mutation in package behavior |
-| `sudarshana drift` | Detects when packages gain new capabilities between versions |
-| `sudarshana snapshot` | Saves behavioral baseline for future comparison |
-| `sudarshana predict` | Transitive risk, anomaly detection, pre-merge simulation |
-| `sudarshana map` | Interactive dark-theme HTML showing your attack surface |
-| `sudarshana dashboard` | Real-time local web UI (localhost:4040) |
-| `sudarshana sbom` | CycloneDX SBOM with per-package capability annotations |
-| `sudarshana compliance` | Maps your posture to ISO 27001 / SOC 2 / NIST CSF |
-| `sudarshana forensics` | Full incident timeline for your IR team |
-| `sudarshana heal` | Self-healing — auto-tightens unused, auto-relaxes false positives |
-| `sudarshana network` | P2P anonymous threat sharing between Sudarshana instances |
-| `sudarshana install` | npm install with postinstall script isolation |
-| `sudarshana audit` | Package integrity verification |
-| `sudarshana doctor` | Self-test (verifies core mechanisms work) |
+```
+┌─────────────────────────────────────────────────────────────┐
+│  evil-pkg tries:              │  What it gets:               │
+├───────────────────────────────┼──────────────────────────────┤
+│  process.env.AWS_SECRET_KEY   │  undefined (doesn't exist)   │
+│  fs.readFile('/etc/passwd')   │  ENOENT (file not found)     │
+│  dns.resolve('evil.com')      │  ENOTFOUND (domain unknown)  │
+│  http.request('evil.com')     │  ECONNREFUSED (natural)      │
+│  child_process.exec('curl')   │  spawn ENOENT (cmd missing)  │
+│  process.env.DATABASE_URL     │  🍯 HONEYPOT → ALERT FIRED  │
+├───────────────────────────────┼──────────────────────────────┤
+│  Meanwhile, express:          │                              │
+│  process.env.PORT             │  "3000" ✅ (works normally)  │
+│  fs.readFile('./views/x.ejs') │  file content ✅             │
+│  net.listen(3000)             │  listening ✅                │
+└─────────────────────────────────────────────────────────────┘
+```
 
----
-
-## How it works (30 seconds)
-
-1. **Intercepts `require()` and `import`** — every module load goes through Sudarshana
-2. **Identifies the caller** — call-stack attribution knows which *package* is asking
-3. **Applies per-package policy** — each package gets a virtual environment tailored to its needs
-4. **Monitors behavior** — if a package reads credentials then makes a network call, that's flagged
-5. **Plants honeypots** — fake credential values that trigger alerts if accessed
-6. **Tracks content** — follows sensitive data through encoding, temp files, chunking
-7. **Self-heals** — unused permissions get removed, false positives get auto-relaxed
-
-All of this happens in ~2ms overhead per require call. Your app runs at normal speed.
-
----
-
-## The attacks it stops
-
-| Attack | Real-world example | How Sudarshana stops it |
-|--------|-------------------|------------------------|
-| Credential theft | `event-stream` (2018) | Package can't see real env vars — only honeypots |
-| Data exfiltration | `@azure/identity` theft (2023) | Network blocked to undeclared domains |
-| Staged exfiltration | Write to tmp → read → send | Content hash tracked across all transformations |
-| Filesystem snooping | `node-ipc` protest-ware (2022) | Can't write outside its own directory |
-| Cryptomining | `ua-parser-js` hijack (2021) | Shell execution blocked |
-| Supply chain pivot | Ledger Connect Kit (2023) | DNS resolution fails for attacker domains |
-| Maintainer takeover | Any future attack | Behavioral DNA detects mutation instantly |
-| Zero-day | Unknown | If behavior changes, it's flagged — no signature needed |
+Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe where the things they're looking for don't exist.
 
 ---
 
 ## Architecture
 
 ```
-L10  🧠 AUTONOMOUS     Self-healing, behavioral DNA, incident response
-L9   🌐 ECOSYSTEM      Dashboard, P2P threat network, GitHub Action
-L8   🧠 PREDICTIVE     Anomaly detection, transitive risk, pre-merge sim
-L7   📜 COMPLIANCE     SBOM, forensics, ISO/SOC2/NIST mapping
-L6   🔬 SCANNER        AST analysis, obfuscation scoring, entropy
-L5   📊 VISIBILITY     Interactive force-directed security map
-L4   🛡️  DEFENSE        Quarantine, drift detection, threat feed
-L3   🧠 SELF-LEARN     Auto-policy, reputation scoring, learn mode
-L2   🔥 BEHAVIORAL     Honeypots, content tracking, READ→SEND correlation
-L1   🏗️  SANDBOX        Per-package isolation, invisible, natural errors
+    ┌──────────────────────────────────────────────────────────────┐
+    │                                                              │
+    │   L12  👁️  OMNISCIENCE                                       │
+    │        Ecosystem behavioral DB, attack simulation,           │
+    │        supply chain provenance, auto-CVE/advisory            │
+    │                                                              │
+    │   L11  ⚔️  OFFENSIVE                                         │
+    │        Decoy packages, attacker fingerprinting,              │
+    │        registry watcher, time-bomb detection                 │
+    │                                                              │
+    │   L10  🧠  AUTONOMOUS                                        │
+    │        Self-healing policies, behavioral DNA,                │
+    │        autonomous incident response                          │
+    │                                                              │
+    │   L9   🌐  ECOSYSTEM                                         │
+    │        Real-time dashboard, P2P threat network,              │
+    │        GitHub Action CI/CD                                   │
+    │                                                              │
+    │   L8   📡  PREDICTIVE                                        │
+    │        Z-score anomaly detection, transitive risk,           │
+    │        maintainer trust chain, pre-merge simulation          │
+    │                                                              │
+    │   L7   📜  COMPLIANCE                                        │
+    │        CycloneDX SBOM, forensics timeline,                   │
+    │        ISO 27001 / SOC 2 / NIST CSF mapping                  │
+    │                                                              │
+    │   L6   🔬  SCANNER                                           │
+    │        AST analysis, Shannon entropy, obfuscation score,     │
+    │        install script simulation                              │
+    │                                                              │
+    │   L5   📊  VISIBILITY                                        │
+    │        Interactive force-directed dependency map,             │
+    │        dark-theme HTML, click-to-inspect                     │
+    │                                                              │
+    │   L4   🛡️   DEFENSE                                          │
+    │        Quarantine (no crash), drift detection,               │
+    │        shared threat intelligence feed                       │
+    │                                                              │
+    │   L3   🧠  SELF-LEARN                                        │
+    │        Auto-policy generation, package reputation,           │
+    │        behavioral learning across runs                       │
+    │                                                              │
+    │   L2   🔥  BEHAVIORAL                                        │
+    │        Honeypot traps, READ→SEND correlation,                │
+    │        content hash tracking across encodings                │
+    │                                                              │
+    │   L1   🏗️   SANDBOX                                          │
+    │        Per-package Module._load isolation,                   │
+    │        virtual fs/dns/http/env/shell, invisible              │
+    │                                                              │
+    └──────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Zero config
+## All 24 commands
 
-Run `sudarshana init` and it figures out your dependency graph. It knows that:
-- `lodash`, `ramda`, `underscore` → pure compute, need nothing
-- `express`, `fastify`, `koa` → need PORT and localhost binding
-- `pg`, `mysql2`, `prisma` → need DATABASE_URL and db host
-- `aws-sdk`, `@aws-sdk/*` → need AWS_* vars and *.amazonaws.com
+| Command | What it does |
+|---------|-------------|
+| **Core** | |
+| `sudarshana init` | Auto-generate per-package policies from dependency graph |
+| `sudarshana run` | Run app with invisible per-package sandboxing |
+| `sudarshana learn` | Observe behavior → auto-write tightest possible policy |
+| `sudarshana doctor` | Self-test (verify core mechanisms work) |
+| **Analysis** | |
+| `sudarshana scan` | Static AST analysis — eval, obfuscation, encoded payloads |
+| `sudarshana dna` | Behavioral DNA — flag any mutation in package behavior |
+| `sudarshana drift` | Detect capability changes between versions |
+| `sudarshana predict` | Transitive risk + anomaly detection + pre-merge sim |
+| `sudarshana watch` | Registry monitoring — typosquats, maintainer changes, time-bombs |
+| **Visualization** | |
+| `sudarshana map` | Interactive dark-theme HTML attack surface graph |
+| `sudarshana dashboard` | Real-time local web UI (auto-refreshing) |
+| **Defense** | |
+| `sudarshana snapshot` | Save behavioral baseline |
+| `sudarshana heal` | Self-healing — auto-tighten unused, auto-relax false positives |
+| `sudarshana install` | npm install with postinstall isolation |
+| `sudarshana audit` | Package integrity verification |
+| **Intelligence** | |
+| `sudarshana intel` | Show attacker profiles (built from caught threats) |
+| `sudarshana decoy` | Generate honeypot packages to trap attackers |
+| `sudarshana network` | P2P anonymous threat sharing status |
+| **Compliance** | |
+| `sudarshana sbom` | CycloneDX SBOM with capability annotations |
+| `sudarshana compliance` | ISO 27001 / SOC 2 / NIST CSF control mapping |
+| `sudarshana forensics` | Full incident timeline for IR teams |
+| **Omniscience** | |
+| `sudarshana simulate` | Red-team yourself — 16 attack scenarios auto-tested |
+| `sudarshana attest` | Cryptographic supply chain provenance (SLSA-style) |
+| `sudarshana advisory` | Auto-generate CVE/GHSA/npm reports on confirmed threats |
 
-Or run `sudarshana learn` for a week — it observes and generates the tightest policy automatically. Zero manual config ever.
+---
+
+## Attacks it stops
+
+| Attack | Real-world example | How |
+|--------|-------------------|-----|
+| Credential theft | `event-stream` (2018) | Env vars don't exist for that package |
+| Data exfiltration | `@azure/identity` (2023) | Network blocked — ECONNREFUSED |
+| Staged exfiltration | write→encode→send | Content hash tracked across transforms |
+| Filesystem snooping | `node-ipc` (2022) | Files don't exist — ENOENT |
+| Cryptomining | `ua-parser-js` (2021) | Shell blocked — spawn ENOENT |
+| Supply chain pivot | Ledger Connect Kit (2023) | DNS returns ENOTFOUND |
+| Maintainer takeover | (any future) | Behavioral DNA catches mutation |
+| Time-bomb (delayed) | Conditional trigger | Static scanner detects date patterns |
+| Zero-day (unknown) | (any future) | Behavior changed = flagged. No signature needed. |
+| Typosquatting | `expresss` | Registry watcher alerts on similar names |
+
+---
+
+## How it compares
+
+```
+                              Snyk    Socket   Bheeshma   Sudarshana
+                              ($$$)   ($$)     (free)     (free)
+─────────────────────────────────────────────────────────────────────
+Runtime sandbox                 ❌      ❌       ❌         ✅
+Per-package isolation           ❌      ❌       ❌         ✅
+Invisible to packages           ❌      ❌       ❌         ✅
+Honeypot traps                  ❌      ❌       ❌         ✅
+Self-learning policies          ❌      ❌       ❌         ✅
+Behavioral DNA                  ❌      ❌       ❌         ✅
+Self-healing                    ❌      ❌       ❌         ✅
+Quarantine (no crash)           ❌      ❌       ❌         ✅
+Attack simulation               ❌      ❌       ❌         ✅
+Provenance attestation          ❌      ❌       ❌         ✅
+Auto CVE/advisory               ❌      ❌       ❌         ✅
+Decoy packages                  ❌      ❌       ❌         ✅
+Attacker profiling              ❌      ❌       ❌         ✅
+Time-bomb detection             ❌      partial  ❌         ✅
+Registry watching               ❌      ✅       ❌         ✅
+Static scanning                 ✅      ✅       ❌         ✅
+SBOM generation                 ✅      ❌       ❌         ✅
+Compliance mapping              $$$     ❌       ❌         ✅
+Dashboard                       $$$     ❌       ❌         ✅
+P2P threat sharing              ❌      ❌       ❌         ✅
+Zero dependencies               ❌      ❌       ❌         ✅
+─────────────────────────────────────────────────────────────────────
+Score                           3/21   3/21     0/21       21/21
+```
 
 ---
 
 ## Philosophy
 
-Named after the Sudarshana Chakra — the divine disc that protects by *cutting off* threats, not by watching them happen.
+Named after the Sudarshana Chakra — the divine disc that doesn't warn, doesn't negotiate, doesn't wait. It severs.
 
-Most security tools are Bheeshma — wise observers who see everything but intervene too late. Sudarshana is different. It doesn't detect attacks. It makes them *physically impossible*. A package can't exfiltrate credentials it literally cannot see.
+Most security tools are observers. They watch the theft happen and write a report. Sudarshana makes theft *physically impossible*. A package can't exfiltrate credentials it cannot see. Can't phone home to a domain that doesn't resolve. Can't read a file that doesn't exist in its universe.
+
+And when something mutates — when a trusted package suddenly reaches for things it never reached for before — the disc doesn't need a signature database. It doesn't need a rule. Behavior changed. That's enough.
 
 ---
 
@@ -135,7 +214,7 @@ Most security tools are Bheeshma — wise observers who see everything but inter
 
 - Node.js >= 16
 - Works on Linux, macOS, Windows
-- Zero external dependencies (intentional — we practice what we preach)
+- Zero external dependencies
 
 ---
 

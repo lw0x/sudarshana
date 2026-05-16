@@ -26,8 +26,8 @@ const command = args[0];
 function showBanner() {
   console.log(`
   ╔═══════════════════════════════════════════════════╗
-  ║  🔥       SUDARSHANA       ║
-  ║     "When Mystery meets reality."    ║
+  ║  🔥 SUDARSHANA v2.0 — Supply Chain Defense       ║
+  ║     "The gun doesn't exist in their reality."    ║
   ╚═══════════════════════════════════════════════════╝
   `);
 }
@@ -562,6 +562,130 @@ switch (command) {
     console.log(`  Last sync:      ${status.lastSync || 'never'}`);
     console.log(`  Auto-publish:   ${status.autoPublish}`);
     console.log(`  Auto-subscribe: ${status.autoSubscribe}\n`);
+    break;
+  }
+
+  case 'decoy': {
+    showBanner();
+    const { DecoyGenerator } = require('../src/offensive/decoy-generator');
+    const generator = new DecoyGenerator(process.cwd());
+
+    if (args.includes('--generate')) {
+      const type = args.find(a => a.startsWith('--type='))?.split('=')[1] || 'typosquat';
+      console.log(`  🎭 Generating ${type} decoy packages...\n`);
+      const decoys = generator.generateDecoys({ type, count: 5 });
+      generator.saveToDisk(decoys);
+      for (const d of decoys) {
+        console.log(`  📦 ${d.name} (callback: ${d.callbackId})`);
+      }
+      console.log(`\n  ✅ ${decoys.length} decoys generated in .sudarshana-decoys/packages/`);
+      console.log('  Review, then: cd .sudarshana-decoys/packages/<name> && npm publish\n');
+    } else {
+      console.log('  🎭 Decoy Package System\n');
+      console.log('  Generate honeypot packages to trap attackers:\n');
+      console.log('    sudarshana decoy --generate              Typosquat decoys');
+      console.log('    sudarshana decoy --generate --type=confusion   Dep confusion decoys');
+      console.log('    sudarshana decoy --generate --type=internal    Internal-name decoys\n');
+    }
+    break;
+  }
+
+  case 'watch': {
+    showBanner();
+    const { RegistryWatcher } = require('../src/offensive/registry-watcher');
+    const watcher = new RegistryWatcher(process.cwd());
+
+    if (args.includes('--timebombs')) {
+      console.log('  ⏰ Scanning for time-bomb patterns...\n');
+      const alerts = watcher.detectTimeBombs();
+      console.log(watcher.generateReport(alerts));
+    } else if (args.includes('--watchlist')) {
+      const watchlist = watcher.generateWatchlist();
+      console.log('  👁️  Typosquat Watchlist\n');
+      for (const item of watchlist.slice(0, 10)) {
+        console.log(`  ${item.original} → ${item.variants.slice(0, 3).join(', ')}...`);
+      }
+      console.log(`\n  Total packages monitored: ${watchlist.length}`);
+      console.log(`  Total variants tracked: ${watchlist.reduce((s, w) => s + w.variants.length, 0)}\n`);
+    } else {
+      console.log('  👁️  Registry Watcher\n');
+      console.log('  Commands:\n');
+      console.log('    sudarshana watch --timebombs     Scan installed packages for time-bomb code');
+      console.log('    sudarshana watch --watchlist     Show typosquat variants being monitored');
+      console.log('    sudarshana watch --check         Check npm registry (requires network)\n');
+    }
+    break;
+  }
+
+  case 'intel': {
+    showBanner();
+    const { AttackerProfiler } = require('../src/offensive/attacker-profiler');
+    const profiler = new AttackerProfiler(process.cwd());
+    console.log(profiler.getReport());
+    break;
+  }
+
+  case 'simulate': {
+    showBanner();
+    const { AttackSimulator } = require('../src/omniscience/attack-simulator');
+    const simulator = new AttackSimulator(process.cwd());
+
+    console.log('  🎯 Running attack simulation (16 scenarios)...\n');
+    const results = simulator.simulate();
+    console.log(simulator.generateReport(results));
+    if (results.bypassed > 0) process.exit(1);
+    break;
+  }
+
+  case 'attest': {
+    showBanner();
+    const { ProvenanceEngine } = require('../src/omniscience/provenance');
+    const provenance = new ProvenanceEngine(process.cwd());
+
+    if (args.includes('--verify')) {
+      console.log('  🔐 Verifying supply chain provenance...\n');
+      try {
+        const result = provenance.verify();
+        console.log(provenance.generateReport(result));
+        if (result.critical > 0) process.exit(1);
+      } catch(e) {
+        console.error(`  ❌ ${e.message}\n`);
+        process.exit(1);
+      }
+    } else {
+      console.log('  🔐 Generating supply chain attestation...\n');
+      const attestation = provenance.generateAttestation();
+      console.log(`  ✅ Attestation generated`);
+      console.log(`  Packages attested: ${Object.keys(attestation.attestations).length}`);
+      console.log(`  Root hash: ${attestation.rootHash.substring(0, 16)}...`);
+      console.log(`  Stored: .sudarshana-provenance/attestation.json`);
+      console.log(`\n  Run \`sudarshana attest --verify\` after updates to detect tampering.\n`);
+    }
+    break;
+  }
+
+  case 'advisory': {
+    showBanner();
+    const { AutoAdvisory } = require('../src/omniscience/auto-advisory');
+    const advisory = new AutoAdvisory(process.cwd());
+
+    const pkg = args[1];
+    const version = args[2];
+    const threat = args.find(a => a.startsWith('--threat='))?.split('=')[1] || 'HONEYPOT_ACCESS';
+
+    if (!pkg || !version) {
+      console.log('  📋 Auto-Advisory Generator\n');
+      console.log('  Usage: sudarshana advisory <package> <version> --threat=<type>\n');
+      console.log('  Threat types: HONEYPOT_ACCESS, READ_THEN_SEND, STAGED_EXFILTRATION,');
+      console.log('                CONTENT_MUTATED_SAME_VERSION, DNS_TUNNELING\n');
+    } else {
+      console.log(`  📋 Generating security advisory for ${pkg}@${version}...\n`);
+      const result = advisory.generate({ package: pkg, version, threatType: threat, severity: 'CRITICAL' });
+      console.log(`  ✅ Advisory ${result.advisoryId} generated`);
+      console.log(`  Reports: GHSA, CVE, npm abuse, internal`);
+      console.log(`  Saved: .sudarshana-advisories/${result.advisoryId}.json`);
+      console.log(`  Markdown: .sudarshana-advisories/${result.advisoryId}.md\n`);
+    }
     break;
   }
 
