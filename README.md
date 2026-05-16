@@ -102,9 +102,9 @@ Most security tools are Bheeshma — wise observers who see everything but inter
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). We especially need help with:
-- Real-world compatibility testing
 - ESM module support
 - More package presets
+- Edge case discovery
 
 ---
 
