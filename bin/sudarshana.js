@@ -764,6 +764,50 @@ switch (command) {
     break;
   }
 
+  case 'proxy': {
+    const { RegistryProxy } = require('../src/transcendence/registry-proxy');
+    const port = parseInt(args.find(a => a.startsWith('--port='))?.split('=')[1] || '4873');
+    const proxy = new RegistryProxy({ port, projectRoot: process.cwd() });
+    proxy.start();
+    break;
+  }
+
+  case 'polyglot': {
+    showBanner();
+    const { PolyglotEngine } = require('../src/transcendence/polyglot-engine');
+    const engine = new PolyglotEngine(process.cwd());
+
+    if (args.includes('--detect')) {
+      const detected = engine.detectEcosystems();
+      console.log('  🌐 Detected ecosystems:\n');
+      for (const eco of detected) {
+        console.log(`    ✅ ${eco.name} (${eco.manifest})`);
+      }
+      if (detected.length === 0) console.log('    No recognized ecosystems found.');
+      console.log('');
+    } else if (args.includes('--ecosystems')) {
+      const info = engine.getEcosystemInfo();
+      console.log('  🌐 Supported Ecosystems:\n');
+      for (const eco of info) {
+        console.log(`    ${eco.name.padEnd(25)} manifest: ${eco.manifest.padEnd(20)} patterns: ${eco.patternCount}`);
+      }
+      console.log('');
+    } else {
+      console.log('  🌐 Polyglot Engine — Multi-ecosystem security\n');
+      console.log('    sudarshana polyglot --detect       Detect project ecosystems');
+      console.log('    sudarshana polyglot --ecosystems   List all supported ecosystems\n');
+    }
+    break;
+  }
+
+  case 'immune': {
+    showBanner();
+    const { ImmuneSystem } = require('../src/transcendence/immune-system');
+    const immune = new ImmuneSystem(process.cwd());
+    console.log(immune.generateReport());
+    break;
+  }
+
   case '--help':
   case '-h':
   case 'help':
