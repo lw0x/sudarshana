@@ -1,13 +1,9 @@
 <p align="center">
   <br>
-  <br>
-  <code>░█▀▀░█░█░█▀▄░█▀█░█▀▄░█▀▀░█░█░█▀█░█▀█░█▀█</code>
-  <br>
-  <code>░▀▀█░█░█░█░█░█▀█░█▀▄░▀▀█░█▀█░█▀█░█░█░█▀█</code>
-  <br>
-  <code>░▀▀▀░▀▀▀░▀▀░░▀░▀░▀░▀░▀▀▀░▀░▀░▀░▀░▀░▀░▀░▀</code>
-  <br>
-  <br>
+  <img src="logo.png" alt="Sudarshana Chakra" width="280">
+  <br><br>
+  <strong style="font-size: 2em;">S U D A R S H A N A</strong>
+  <br><br>
   <em>every package thinks it's alone. it is.</em>
   <br>
   <br>
