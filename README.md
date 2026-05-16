@@ -91,14 +91,6 @@ Most security tools are Bheeshma — wise observers who see everything but inter
 
 ---
 
-## Current limitations
-
-- CJS only for now. ESM support is coming.
-- Doesn't sandbox native addons (`.node` files)
-- Overhead is ~2ms per unique require, negligible after module cache warms up
-
----
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). We especially need help with:
