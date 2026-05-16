@@ -7,7 +7,7 @@ Every `node_modules/` dependency gets full access to your env vars, your filesys
 Sudarshana fixes this. Per-package. Invisible. Zero config. Zero dependencies.
 
 ```
-42 files │ 393 KB │ 24 commands │ 0 dependencies │ 12 architectural levels
+46 files │ 455 KB │ 27 commands │ 0 dependencies │ 14 architectural levels
 ```
 
 ---
@@ -58,6 +58,14 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 
 ```
     ┌──────────────────────────────────────────────────────────────┐
+    │                                                              │
+    │   L14  ⏳  TEMPORAL                                          │
+    │        Pre-crime prediction, digital twin,                   │
+    │        regression oracle, time-travel audit                  │
+    │                                                              │
+    │   L13  ⚛️  SINGULARITY                                       │
+    │        Custom runtime (VM contexts), kernel-level            │
+    │        policies (eBPF/seccomp/AppArmor)                      │
     │                                                              │
     │   L12  👁️  OMNISCIENCE                                       │
     │        Ecosystem behavioral DB, attack simulation,           │
@@ -112,7 +120,7 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 
 ---
 
-## All 24 commands
+## All 27 commands
 
 | Command | What it does |
 |---------|-------------|
@@ -127,6 +135,7 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 | `sudarshana drift` | Detect capability changes between versions |
 | `sudarshana predict` | Transitive risk + anomaly detection + pre-merge sim |
 | `sudarshana watch` | Registry monitoring — typosquats, maintainer changes, time-bombs |
+| `sudarshana precrime` | Predict which packages WILL be compromised (before it happens) |
 | **Visualization** | |
 | `sudarshana map` | Interactive dark-theme HTML attack surface graph |
 | `sudarshana dashboard` | Real-time local web UI (auto-refreshing) |
@@ -135,6 +144,7 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 | `sudarshana heal` | Self-healing — auto-tighten unused, auto-relax false positives |
 | `sudarshana install` | npm install with postinstall isolation |
 | `sudarshana audit` | Package integrity verification |
+| `sudarshana kernel` | Generate eBPF/seccomp/AppArmor OS-level policies |
 | **Intelligence** | |
 | `sudarshana intel` | Show attacker profiles (built from caught threats) |
 | `sudarshana decoy` | Generate honeypot packages to trap attackers |
@@ -147,6 +157,8 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 | `sudarshana simulate` | Red-team yourself — 16 attack scenarios auto-tested |
 | `sudarshana attest` | Cryptographic supply chain provenance (SLSA-style) |
 | `sudarshana advisory` | Auto-generate CVE/GHSA/npm reports on confirmed threats |
+| **Temporal** | |
+| `sudarshana twin` | Digital twin — regression oracle + time-travel audit |
 
 ---
 
@@ -161,9 +173,11 @@ Packages can't detect they're sandboxed. No "BLOCKED" errors. Just a universe wh
 | Cryptomining | `ua-parser-js` (2021) | Shell blocked — spawn ENOENT |
 | Supply chain pivot | Ledger Connect Kit (2023) | DNS returns ENOTFOUND |
 | Maintainer takeover | (any future) | Behavioral DNA catches mutation |
-| Time-bomb (delayed) | Conditional trigger | Static scanner detects date patterns |
+| Time-bomb (delayed) | Conditional trigger | Static scanner + pre-crime detects patterns |
 | Zero-day (unknown) | (any future) | Behavior changed = flagged. No signature needed. |
 | Typosquatting | `expresss` | Registry watcher alerts on similar names |
+| Native addon bypass | C++ level attack | Kernel policies (seccomp/eBPF) enforce at OS level |
+| Future compromise | (hasn't happened yet) | Pre-crime scores predict which packages are next |
 
 ---
 
@@ -193,9 +207,13 @@ SBOM generation                 ✅      ❌       ❌         ✅
 Compliance mapping              $$$     ❌       ❌         ✅
 Dashboard                       $$$     ❌       ❌         ✅
 P2P threat sharing              ❌      ❌       ❌         ✅
+Kernel-level policies           ❌      ❌       ❌         ✅
+Pre-crime prediction            ❌      ❌       ❌         ✅
+Digital twin / time-travel      ❌      ❌       ❌         ✅
+Custom runtime (VM sandbox)     ❌      ❌       ❌         ✅
 Zero dependencies               ❌      ❌       ❌         ✅
 ─────────────────────────────────────────────────────────────────────
-Score                           3/21   3/21     0/21       21/21
+Score                           3/25   3/25     0/25       25/25
 ```
 
 ---
@@ -208,6 +226,8 @@ Most security tools are observers. They watch the theft happen and write a repor
 
 And when something mutates — when a trusted package suddenly reaches for things it never reached for before — the disc doesn't need a signature database. It doesn't need a rule. Behavior changed. That's enough.
 
+The disc exists across all time. It sees what was. What is. What will be.
+
 ---
 
 ## Requirements
@@ -215,6 +235,7 @@ And when something mutates — when a trusted package suddenly reaches for thing
 - Node.js >= 16
 - Works on Linux, macOS, Windows
 - Zero external dependencies
+- Kernel policies (L13): Linux 5.x+ for eBPF, any OS for Docker seccomp
 
 ---
 
