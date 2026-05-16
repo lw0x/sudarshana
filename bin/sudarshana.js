@@ -689,6 +689,81 @@ switch (command) {
     break;
   }
 
+  case 'kernel': {
+    showBanner();
+    const { KernelPolicyGenerator } = require('../src/singularity/kernel-policy');
+    const generator = new KernelPolicyGenerator(process.cwd());
+
+    console.log('  ⚛️  Generating kernel-level security policies...\n');
+    const result = generator.generate();
+    const outputDir = generator.savePolicies(result);
+    console.log(`  Platform: ${result.platform}`);
+    console.log(`  Profiles generated:`);
+    for (const [name] of Object.entries(result.profiles)) {
+      console.log(`    ✅ ${name}`);
+    }
+    console.log(`\n  Saved to: ${outputDir}\n`);
+    break;
+  }
+
+  case 'precrime': {
+    showBanner();
+    const { PreCrimeEngine } = require('../src/temporal/pre-crime');
+    const engine = new PreCrimeEngine(process.cwd());
+
+    console.log('  🔮 Running pre-crime analysis...\n');
+    const results = engine.analyze();
+    console.log(engine.generateReport(results));
+    break;
+  }
+
+  case 'twin': {
+    showBanner();
+    const { DigitalTwin } = require('../src/temporal/digital-twin');
+    const twin = new DigitalTwin(process.cwd());
+
+    if (args.includes('--snapshot')) {
+      console.log('  ⏳ Taking digital twin snapshot...\n');
+      const snap = twin.snapshot();
+      console.log(`  ✅ Snapshot ${snap.id} saved`);
+      console.log(`  Packages captured: ${Object.keys(snap.packages).length}`);
+      console.log(`  Timeline depth: ${twin.timeline.snapshots.length} snapshots\n`);
+    } else if (args.includes('--regression')) {
+      const from = parseInt(args.find(a => a.startsWith('--from='))?.split('=')[1] || '0');
+      const to = twin.timeline.snapshots.length - 1;
+      if (twin.timeline.snapshots.length < 2) {
+        console.log('  Need at least 2 snapshots. Run `sudarshana twin --snapshot` twice.\n');
+      } else {
+        const analysis = twin.regressionAnalysis(from, to);
+        console.log(twin.generateReport(analysis));
+      }
+    } else if (args.includes('--audit')) {
+      const pkg = args[args.indexOf('--audit') + 1];
+      const fromV = args.find(a => a.startsWith('--from='))?.split('=')[1] || '0.0.0';
+      const toV = args.find(a => a.startsWith('--to='))?.split('=')[1] || '999.0.0';
+      if (!pkg) {
+        console.log('  Usage: sudarshana twin --audit <package> --from=1.0.0 --to=1.0.1\n');
+      } else {
+        const exposure = twin.timeTravelAudit(pkg, fromV, toV);
+        console.log('  ⏳ Time-Travel Audit: ' + pkg + '\n');
+        console.log('  ' + JSON.stringify(exposure, null, 2).replace(/\n/g, '\n  '));
+        console.log('');
+      }
+    } else {
+      const status = twin.getStatus();
+      console.log('  ⏳ Digital Twin Status\n');
+      console.log(`  Snapshots: ${status.snapshots}`);
+      console.log(`  First: ${status.firstSnapshot || 'none'}`);
+      console.log(`  Last:  ${status.lastSnapshot || 'none'}`);
+      console.log('');
+      console.log('  Commands:');
+      console.log('    sudarshana twin --snapshot        Take new snapshot');
+      console.log('    sudarshana twin --regression      Compare first vs latest');
+      console.log('    sudarshana twin --audit <pkg>     Time-travel audit\n');
+    }
+    break;
+  }
+
   case '--help':
   case '-h':
   case 'help':
