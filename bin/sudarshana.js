@@ -26,8 +26,8 @@ const command = args[0];
 function showBanner() {
   console.log(`
   ╔═══════════════════════════════════════════════════╗
-  ║  🔥       SUDARSHANA        ║
-  ║     "When Mystery meets reality."    ║
+  ║  🔥 SUDARSHANA v2.0 — Supply Chain Defense       ║
+  ║     "The gun doesn't exist in their reality."    ║
   ╚═══════════════════════════════════════════════════╝
   `);
 }
