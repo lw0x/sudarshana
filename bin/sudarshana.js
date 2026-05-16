@@ -948,6 +948,53 @@ switch (command) {
     break;
   }
 
+  case 'vuln': {
+    showBanner();
+    const { VulnerabilityDB } = require('../src/free-tier/vulnerability-db');
+    const vulnDb = new VulnerabilityDB(process.cwd());
+
+    console.log('  🔓 Scanning for known vulnerabilities (via OSV.dev)...\n');
+    vulnDb.scanAll().then(results => {
+      const fixes = vulnDb.generateFixes(results);
+      console.log(vulnDb.generateReport(results, fixes));
+    }).catch(e => {
+      console.error('  ❌ Scan failed: ' + e.message);
+      console.log('  Note: requires network access to query OSV.dev\n');
+    });
+    break;
+  }
+
+  case 'license': {
+    showBanner();
+    const { LicenseCompliance } = require('../src/free-tier/license-compliance');
+    const compliance = new LicenseCompliance(process.cwd());
+
+    const policyName = args.find(a => a.startsWith('--policy='))?.split('=')[1] || 'moderate';
+    const scanResults = compliance.scan();
+    const enforcement = compliance.enforce(scanResults, policyName);
+    console.log(compliance.generateReport(enforcement));
+
+    if (args.includes('--export=csv')) {
+      const csv = compliance.exportCSV(scanResults);
+      const outPath = path.join(process.cwd(), 'sudarshana-licenses.csv');
+      fs.writeFileSync(outPath, csv);
+      console.log(`  📄 Exported to: ${outPath}\n`);
+    }
+    break;
+  }
+
+  case 'graph': {
+    showBanner();
+    const { DependencyGraph } = require('../src/free-tier/dependency-graph');
+    const graph = new DependencyGraph(process.cwd());
+
+    console.log('  🌳 Building dependency graph...\n');
+    graph.buildGraph();
+    const analysis = graph.analyze();
+    console.log(graph.generateReport(analysis));
+    break;
+  }
+
   case '--help':
   case '-h':
   case 'help':

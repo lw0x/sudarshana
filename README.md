@@ -224,8 +224,8 @@ No "BLOCKED" errors. Just a universe where the things they're looking for don't 
 ## How it compares
 
 ```
-                              Snyk    Socket   Bheeshma   Sudarshana
-                              ($$$)   ($$)     (free)     (free)
+                              Tool-A  Tool-B   Tool-C     Sudarshana
+                              (paid)   (paid)     (free)     (free)
 ─────────────────────────────────────────────────────────────────────
 Runtime per-package sandbox     ❌      ❌       ❌         ✅
 Invisible to packages           ❌      ❌       ❌         ✅
@@ -305,6 +305,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). We especially need help with:
 Conceived and forged by lw0x × bb1nfosec
 
 "The disc doesn't warn. It severs."
+
+Free. Because the vault doesn't ask if you can afford it. It just protects what's inside.
 ```
 
 ---

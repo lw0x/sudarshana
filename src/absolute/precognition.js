@@ -283,7 +283,7 @@ class PrecognitionNetwork {
         generation: 2,
         era: '2021-2022',
         vector: 'Typosquatting + postinstall scripts',
-        defense: 'Socket.dev, npm --ignore-scripts',
+        defense: 'Static analysis tools, npm --ignore-scripts',
         status: 'DEFENDED'
       },
       {
