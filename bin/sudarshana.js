@@ -26,8 +26,8 @@ const command = args[0];
 function showBanner() {
   console.log(`
   ╔═══════════════════════════════════════════════════╗
-  ║  🔥         SUDARSHANA        ║
-  ║     "When Mystery meets reality."    ║
+  ║  🔥 SUDARSHANA v2.0 — Supply Chain Defense       ║
+  ║     "The gun doesn't exist in their reality."    ║
   ╚═══════════════════════════════════════════════════╝
   `);
 }
@@ -878,6 +878,73 @@ switch (command) {
     const { PrecognitionNetwork } = require('../src/absolute/precognition');
     const precog = new PrecognitionNetwork(process.cwd());
     console.log(precog.generateReport());
+    break;
+  }
+
+  case 'eject': {
+    const { eject } = require('../src/compat/runtime-compat');
+    const disableFile = eject(process.cwd());
+    console.log('\n  ⏏️  Sudarshana EJECTED (disabled instantly)\n');
+    console.log('  Your app will run without any Sudarshana hooks.');
+    console.log('  To re-enable: sudarshana enable');
+    console.log(`  (or delete: ${disableFile})\n`);
+    break;
+  }
+
+  case 'enable': {
+    const { enable } = require('../src/compat/runtime-compat');
+    const wasDisabled = enable(process.cwd());
+    if (wasDisabled) {
+      console.log('\n  ✅ Sudarshana RE-ENABLED\n');
+    } else {
+      console.log('\n  ℹ️  Sudarshana was not disabled.\n');
+    }
+    break;
+  }
+
+  case 'debug': {
+    showBanner();
+    const { DebugLogger } = require('../src/compat/runtime-compat');
+    const debugLog = path.join(process.cwd(), '.sudarshana-debug.json');
+
+    if (fs.existsSync(debugLog)) {
+      const data = JSON.parse(fs.readFileSync(debugLog, 'utf8'));
+      console.log('  🐛 Debug Log\n');
+      console.log(`  Events: ${data.eventCount}`);
+      console.log(`  Blocks: ${data.blocks}`);
+      console.log(`  Fallbacks: ${data.fallbacks}\n`);
+      if (data.blocks > 0) {
+        console.log('  Recent blocks:');
+        const blocks = data.events.filter(e => e.category === 'BLOCK').slice(-10);
+        for (const b of blocks) {
+          console.log(`    🚫 ${b.message}`);
+        }
+      }
+      console.log('\n  Full log: .sudarshana-debug.json\n');
+    } else {
+      console.log('  🐛 Debug Mode\n');
+      console.log('  No debug log found. Run your app with debug enabled:\n');
+      console.log('    SUDARSHANA_DEBUG=1 sudarshana run -- node app.js\n');
+      console.log('  This logs every allow/block decision to .sudarshana-debug.json');
+      console.log('  Use this to diagnose "why is my package blocked?"\n');
+    }
+    break;
+  }
+
+  case 'env': {
+    showBanner();
+    const { detectEnvironment, getSandboxStrategy } = require('../src/compat/runtime-compat');
+    const env = detectEnvironment(process.cwd());
+    const strategy = getSandboxStrategy(env);
+    console.log('  🔍 Project Environment\n');
+    console.log(`  TypeScript:       ${env.typescript ? '✅ ' + (env.tsRunner || 'detected') : '❌'}`);
+    console.log(`  Bundler:          ${env.bundler || 'none'}`);
+    console.log(`  Monorepo:         ${env.monorepo || 'none'}`);
+    console.log(`  Serverless:       ${env.serverless || 'none'}`);
+    console.log(`  Module type:      ${env.moduleType}`);
+    console.log(`  Package manager:  ${env.packageManager}`);
+    console.log(`\n  Sandbox strategy: ${strategy.strategy}`);
+    console.log(`  Reason: ${strategy.reason}\n`);
     break;
   }
 
