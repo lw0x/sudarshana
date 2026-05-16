@@ -1,4 +1,4 @@
-# Sudarshana
+# Sudarshana - When Mystery meets reality!
 
 **Your npm packages are running with your credentials. All of them. Right now.**
 
