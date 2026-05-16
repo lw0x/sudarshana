@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * SUDARSHANA v2.0 CLI — The Complete Security Platform
+ * SUDARSHANA  — The Complete Security Platform
  * 
  * Commands:
  *   sudarshana init [--strict] [--report]  Generate policies automatically
@@ -26,8 +26,8 @@ const command = args[0];
 function showBanner() {
   console.log(`
   ╔═══════════════════════════════════════════════════╗
-  ║  🔥 SUDARSHANA v2.0 — Supply Chain Defense       ║
-  ║     "The gun doesn't exist in their reality."    ║
+  ║  🔥        SUDARSHANA       ║
+  ║     "When Mystery meets reality."    ║
   ╚═══════════════════════════════════════════════════╝
   `);
 }
