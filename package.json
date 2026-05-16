@@ -1,0 +1,54 @@
+{
+  "name": "sudarshana",
+  "version": "2.0.0-beta.1",
+  "description": "Zero-trust per-package runtime sandbox for Node.js — makes supply-chain attacks physically impossible",
+  "main": "src/index.js",
+  "bin": {
+    "sudarshana": "./bin/sudarshana.js"
+  },
+  "scripts": {
+    "doctor": "node bin/sudarshana.js doctor",
+    "init": "node bin/sudarshana.js init",
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "security",
+    "supply-chain",
+    "sandbox",
+    "runtime-protection",
+    "npm-security",
+    "dependency-security",
+    "zero-trust",
+    "honeypot",
+    "malware-detection",
+    "package-sandboxing",
+    "node-security"
+  ],
+  "author": "Sudarshana Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lw0x/sudarshana.git"
+  },
+  "homepage": "https://github.com/lw0x/sudarshana#readme",
+  "bugs": {
+    "url": "https://github.com/lw0x/sudarshana/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "ARCHITECTURE.md",
+    "LICENSE"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
