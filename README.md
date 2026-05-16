@@ -96,6 +96,7 @@ Most security tools are Bheeshma — wise observers who see everything but inter
 See [CONTRIBUTING.md](CONTRIBUTING.md). We especially need help with:
 - More package presets
 - Edge case discovery
+- Evasion research
 
 ---
 
