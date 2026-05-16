@@ -22,8 +22,8 @@ const command = args[0];
 function showBanner() {
   console.log(`
   ╔═══════════════════════════════════════════════════╗
-  ║  🔥 SUDARSHANA v2.0 — Supply Chain Defense       ║
-  ║     "The gun doesn't exist in their reality."    ║
+  ║  🔥 SUDARSHANA  — Supply Chain Defense       ║
+  ║     "When Mystery meets reality."    ║
   ╚═══════════════════════════════════════════════════╝
   `);
 }
@@ -100,11 +100,30 @@ switch (command) {
 
     const { spawn } = require('child_process');
     const sudarshanaPath = path.resolve(__dirname, '../src/index.js');
+    const esmLoaderPath = path.resolve(__dirname, '../src/resolve.mjs');
 
     const [cmd, ...cmdArgs] = childCmd;
-    const nodeOptions = `--require ${sudarshanaPath}`;
+
+    // Detect if running an ESM file (.mjs or "type": "module" in package.json)
+    const targetFile = cmdArgs[0] || '';
+    const isESM = targetFile.endsWith('.mjs') || (() => {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
+        return pkg.type === 'module';
+      } catch { return false; }
+    })();
+
+    // CJS: --require hook | ESM: --import hook (Node 20+) or --experimental-loader (Node 18)
+    const nodeVersion = parseInt(process.version.slice(1));
+    const esmFlag = nodeVersion >= 20
+      ? `--import ${esmLoaderPath}`
+      : `--experimental-loader ${esmLoaderPath}`;
+    const nodeOptions = isESM
+      ? `--require ${sudarshanaPath} ${esmFlag}`
+      : `--require ${sudarshanaPath}`;
 
     console.log(`🔥 Sudarshana: Running in ${mode.toUpperCase()} mode`);
+    console.log(`   Module system: ${isESM ? 'ESM (import)' : 'CJS (require)'}`);
     console.log(`   Command: ${childCmd.join(' ')}\n`);
 
     const child = spawn(cmd, cmdArgs, {
@@ -129,7 +148,7 @@ switch (command) {
     console.log('  On Windows/macOS, install-time scripts are monitored but not fully isolated.\n');
 
     const { spawn } = require('child_process');
-    const sudarshanaPath = path.resolve(__dirname, '../src/index-v2.js');
+    const sudarshanaPath = path.resolve(__dirname, '../src/index.js');
 
     // Run npm install with Sudarshana loaded (monitors postinstall scripts)
     const child = spawn('npm', ['install', '--ignore-scripts'], {
